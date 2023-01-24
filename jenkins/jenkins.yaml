@@ -1,0 +1,56 @@
+#jenkins deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jenkins-deployment
+  labels:
+    app: jenkins
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+  template:
+    metadata:
+      labels:
+        app: jenkins
+    spec:
+      containers:
+        - name: jenkins
+          image: jenkins/jenkins 
+          # securityContext:
+          #   privileged: true
+          #    runAsUser: 1000     
+          ports:
+            - containerPort: 8080
+              name: jenkins
+          volumeMounts:
+            - name: jenkins-persistent-storage
+              mountPath: /var/jenkins_home
+      volumes:
+        - name: jenkins-persistent-storage
+          persistentVolumeClaim:
+            claimName: jenkins-pvc
+
+      #Give 777 to /data/jenkins directory on vm OR use below volume
+      
+      #     volumeMounts:
+      #     - name: jenkins-homed
+      #       mountPath: /var/jenkins_home
+      # volumes:
+      #   - name: jenkins-homed
+      #     emptyDir: {}
+
+#jenkins service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: jenkins-service
+spec:
+  selector:
+    app: jenkins #As a ref from deployment labels
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080 #As a ref from target containerPort

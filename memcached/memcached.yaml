@@ -1,0 +1,42 @@
+#memcached deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: memcached-deployment
+  labels:
+    app: memcached
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: memcached
+  template:
+    metadata:
+      labels:
+        app: memcached
+    spec:
+      containers:
+        - name: memcached
+          image: bitnami/memcached:latest
+          # env:
+          #   - name: MEMCACHED_CACHE_SIZE
+          #     value: 3024               
+          #   - name: MEMCACHED_MAX_CONNECTIONS
+          #     value: 3000                
+          ports:
+            - containerPort: 11211
+              name: memcache
+
+#memcached service
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: memcached-service
+spec:
+  selector:
+    app: memcached #As a ref from deployment labels
+  ports:
+    - protocol: TCP
+      port: 11211
+      targetPort: 11211 #As a ref from target containerPort

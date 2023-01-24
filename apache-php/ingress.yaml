@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: apache-ingress
+spec:
+  # tls:
+  # - host:
+  #   - dashboard.com
+  #   secretName: myapp-secret-tls
+  rules:
+    - host: www.cbklocal.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: apache-service
+              servicePort: 80
+    - host: www.shopbuddie.com
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: apache-service
+              servicePort: 80
+    - host: localhost
+      http:
+        paths:
+          - path: /
+            backend:
+              serviceName: apache-service
+              servicePort: 80
+      # Mulitple hosts example
+      # - host: analytics.dashboard.com
+      #   http:
+      #     paths:
+      #       - path: /
+      #         backend:
+      #           serviceName: some-service-name
+      #           servicePort: 3000
+
+      # each time run the command 'minikube addons enable ingress' when you start minikube

@@ -1,0 +1,43 @@
+#apache deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apache-deployment
+  labels:
+    app: apache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apache
+  template:
+    metadata:
+      labels:
+        app: apache
+    spec:
+      containers:
+        - name: apache
+          image: rehanislam/debian10:php7
+          ports:
+            - containerPort: 80
+              name: apache
+          volumeMounts:
+            - name: apache-persistent-storage
+              mountPath: /var/www/html #apache container path
+      volumes:
+        - name: apache-persistent-storage
+          persistentVolumeClaim:
+            claimName: apache-pvc
+---
+#apache service
+apiVersion: v1
+kind: Service
+metadata:
+  name: apache-service
+spec:
+  selector:
+    app: apache
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80

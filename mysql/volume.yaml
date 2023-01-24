@@ -1,0 +1,29 @@
+#Mysqldb pv
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mysqldb-pv
+  labels:
+    type: local
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 6Gi
+  accessModes:
+    - ReadWriteOnce
+  hostPath:
+    path: "/data/databases/mysqldb"
+
+#PV claim
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mysqldb-pvc
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
